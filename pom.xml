@@ -25,6 +25,8 @@
         <module>jobms</module>
         <module>companyms</module>
         <module>reviewms</module>
+        <module>eureka-server</module>
+        <module>api-gateway</module>
     </modules>
 
 </project>
