@@ -1,7 +1,7 @@
 services:
 
   postgres:
-    container_name: postgres_container1
+    container_name: postgres_container
     image: postgres
     environment:
       POSTGRES_USER: seyan99
@@ -10,13 +10,13 @@ services:
     volumes:
       - postgres:/data/postgres
     ports:
-      - "5432:5432"
+      - 5432:5432
     networks:
       - postgres
     restart: unless-stopped
 
   pgadmin:
-    container_name: pgadmin_container1
+    container_name: pgadmin_container
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@mail.org
@@ -25,16 +25,25 @@ services:
     volumes:
       - pgadmin:/var/lib/pgadmin
     ports:
-      - "5050:80"
+      - 5050:80
     networks:
       - postgres
     restart: unless-stopped
 
   zipkin:
     image: openzipkin/zipkin
-    container_name: zipkin1
+    container_name: zipkin
     ports:
-      - "9411:9411"
+      - 9411:9411
+    networks:
+      - postgres
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
     networks:
       - postgres
 

@@ -1,5 +1,7 @@
 package com.example.companyms.company;
 
+import com.example.reviewms.review.dto.ReviewMessage;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,4 +11,6 @@ public interface CompanyService {
     Optional<Company> getCompanyById(Long id);
     boolean deleteCompany(Long id);
     boolean updateCompany(Long id, Company companyUpdate);
+
+    void updateCompanyRating(ReviewMessage reviewMessage);
 }
