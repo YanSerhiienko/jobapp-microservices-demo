@@ -1,6 +1,5 @@
 package com.example.jobms.job.impl;
 
-import com.example.companyms.company.Company;
 import com.example.jobms.job.Job;
 import com.example.jobms.job.JobRepository;
 import com.example.jobms.job.JobService;
@@ -8,6 +7,7 @@ import com.example.jobms.job.clients.CompanyClient;
 import com.example.jobms.job.clients.ReviewClient;
 import com.example.jobms.job.dto.JobDTO;
 import com.example.jobms.job.dto.JobMapper;
+import com.example.jobms.job.external.Company;
 import com.example.jobms.job.external.Review;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
@@ -62,7 +62,7 @@ public class JobServiceImpl implements JobService {
 
         List<Review> reviews = reviewResponse.getBody();*/
 
-        Company company = companyClient.getCompany(job.getCompanyId());
+        Company company = (Company) companyClient.getCompany(job.getCompanyId());
         List<Review> reviews = reviewClient.reviewList(job.getCompanyId());
 
         return jobMapper.mapToJobDTO(job, company, reviews);

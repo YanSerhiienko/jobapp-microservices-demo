@@ -1,7 +1,7 @@
 services:
 
   postgres:
-    container_name: postgres_container
+    container_name: postgres-jobapp
     image: postgres
     environment:
       POSTGRES_USER: seyan99
@@ -14,6 +14,14 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 512M
+        reservations:
+          cpus: 0.25
+          memory: 128M
 
   pgadmin:
     container_name: pgadmin_container
@@ -29,6 +37,145 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 512M
+        reservations:
+          cpus: 0.25
+          memory: 128M
+
+  config-server-ms:
+    image: seyan99/config-server-image:latest
+    container_name: config-server-jobapp
+    ports:
+      - 8080:8080
+    depends_on:
+      - eureka-server-ms
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 768M
+        reservations:
+          cpus: 0.25
+          memory: 128M
+
+  eureka-server-ms:
+    image: seyan99/eureka-server-image:latest
+    container_name: eureka-server-jobapp
+    ports:
+      - 8761:8761
+    depends_on:
+      - rabbitmq
+      - zipkin
+      - postgres
+      - pgadmin
+    networks:
+      - microservice-network
+      - postgres
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 768M
+        reservations:
+          cpus: 0.25
+          memory: 128M
+
+  company-ms:
+    image: seyan99/company-image:latest
+    container_name: company
+    ports:
+      - 8081:8081
+    depends_on:
+      - eureka-server-ms
+      - config-server-ms
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 768M
+        reservations:
+          cpus: 0.25
+          memory: 128M
+
+  job-ms:
+    image: seyan99/job-image:latest
+    container_name: job
+    ports:
+      - 8082:8082
+    depends_on:
+      - eureka-server-ms
+      - config-server-ms
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL-DEFAULTZONE=http://eureka-server-jobapp:8761/eureka
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 768M
+        reservations:
+          cpus: 0.25
+          memory: 128M
+
+  review-ms:
+    image: seyan99/review-image:latest
+    container_name: review
+    ports:
+      - 8083:8083
+    depends_on:
+      - eureka-server-ms
+      - config-server-ms
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 768M
+        reservations:
+          cpus: 0.25
+          memory: 128M
+
+  gateway-ms:
+    image: seyan99/gateway-image:latest
+    container_name: gateway
+    ports:
+      - 8765:8765
+    depends_on:
+      - eureka-server-ms
+    networks:
+      - microservice-network
+      - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 512M
+        reservations:
+          cpus: 0.25
+          memory: 128M
 
   zipkin:
     image: openzipkin/zipkin
@@ -37,6 +184,14 @@ services:
       - 9411:9411
     networks:
       - postgres
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 512M
+        reservations:
+          cpus: 0.25
+          memory: 128M
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -46,8 +201,18 @@ services:
       - 15672:15672
     networks:
       - postgres
+    deploy:
+      resources:
+        limits:
+          cpus: 0.50
+          memory: 512M
+        reservations:
+          cpus: 0.25
+          memory: 128M
 
 networks:
+  microservice-network:
+    driver: bridge
   postgres:
     driver: bridge
 

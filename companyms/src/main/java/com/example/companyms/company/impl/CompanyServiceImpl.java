@@ -4,7 +4,7 @@ import com.example.companyms.company.Company;
 import com.example.companyms.company.CompanyRepository;
 import com.example.companyms.company.CompanyService;
 import com.example.companyms.company.clients.ReviewClient;
-import com.example.reviewms.review.dto.ReviewMessage;
+import com.example.companyms.company.dto.ReviewMessage;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

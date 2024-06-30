@@ -1,7 +1,7 @@
 package com.example.jobms.job.dto;
 
-import com.example.companyms.company.Company;
 import com.example.jobms.job.Job;
+import com.example.jobms.job.external.Company;
 import com.example.jobms.job.external.Review;
 import org.springframework.stereotype.Component;
 

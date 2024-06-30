@@ -1,6 +1,7 @@
 package com.example.companyms.company;
 
-import com.example.reviewms.review.dto.ReviewMessage;
+
+import com.example.companyms.company.dto.ReviewMessage;
 
 import java.util.List;
 import java.util.Optional;
