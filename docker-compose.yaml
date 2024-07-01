@@ -1,7 +1,7 @@
 services:
 
   postgres:
-    container_name: postgres-jobapp
+    container_name: postgres
     image: postgres
     environment:
       POSTGRES_USER: seyan99
@@ -14,17 +14,9 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: 0.50
-          memory: 512M
-        reservations:
-          cpus: 0.25
-          memory: 128M
 
   pgadmin:
-    container_name: pgadmin_container
+    container_name: pgadmin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@mail.org
@@ -37,14 +29,6 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: 0.50
-          memory: 512M
-        reservations:
-          cpus: 0.25
-          memory: 128M
 
   config-server-ms:
     image: seyan99/config-server-image:latest
